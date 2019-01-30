@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "CountdownTimerForm",
+  name: "TimerForm",
   props: {
     timer: {
       require: true

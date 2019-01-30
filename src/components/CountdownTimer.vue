@@ -1,47 +1,46 @@
 <template>
   <div>
     <div>
-      <countdown-timer-form
+      <timer-form
         :timer="timer"
         @resetTimer="resetTimer()"
         @startTimer="startTimer($event)"
       />
     </div>
     <div class="timer">
-      <countdown-timer-text :time="totalTime" :duration="duration" />
+      <timer-text :time="totalTime" :duration="duration" />
       <h3 class="timer-total">
         <span class="minutes">{{ minutes }}</span>
         <span class="separator">:</span>
         <span class="seconds">{{ seconds }}</span>
       </h3>
+      <timer-stop-button
+        v-if="timer"
+        :timerIsRunning="timerIsRunning"
+        @stopTimer="stopTimer()"
+        @startTimer="startTimer()"
+      />
+      <timer-speed-buttons
+        v-if="timer"
+        @changeSpeed="changeTimerSpeed($event)"
+      />
     </div>
-    <countdown-timer-stop-button
-      v-if="timer"
-      :timerIsRunning="timerIsRunning"
-      @stopTimer="stopTimer()"
-      @startTimer="startTimer()"
-    />
-    <br />
-    <countdown-timer-speed-buttons
-      v-if="timer"
-      @changeSpeed="changeTimerSpeed($event)"
-    />
   </div>
 </template>
 
 <script>
-import CountdownTimerForm from "@/components/CountdownTimerForm";
-import CountdownTimerText from "@/components/CountdownTimerText";
-import CountdownTimerStopButton from "@/components/CountdownTimerStopButton";
-import CountdownTimerSpeedButtons from "@/components/CountdownTimerSpeedButtons";
+import TimerForm from "@/components/TimerForm";
+import TimerText from "@/components/TimerText";
+import TimerStopButton from "@/components/TimerStopButton";
+import TimerSpeedButtons from "@/components/TimerSpeedButtons";
 
 export default {
   name: "CountDownTimer",
   components: {
-    CountdownTimerForm,
-    CountdownTimerText,
-    CountdownTimerStopButton,
-    CountdownTimerSpeedButtons
+    TimerForm,
+    TimerText,
+    TimerStopButton,
+    TimerSpeedButtons
   },
   data() {
     return {

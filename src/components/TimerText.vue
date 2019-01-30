@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "CountdownTimerText",
+  name: "TimerText",
   props: {
     time: {
       type: Number,

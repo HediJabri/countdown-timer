@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "CountdownTimerStopButton",
+  name: "TimerStopButton",
   props: {
     timerIsRunning: {
       type: Boolean,
