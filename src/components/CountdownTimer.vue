@@ -1,56 +1,51 @@
 <template>
   <div>
     <div>
-      <template>
-        <p v-if="errorInputMessage">{{ errorInputMessage }}</p>
-        <span>Countdown</span>
-        <input type="number" v-model.number="inputNumber" min="1" />
-        <button v-if="!timer" @click="validateInput">
-          START
-        </button>
-        <button v-else @click="resetTimer">
-          RESET
-        </button>
-      </template>
+      <countdown-timer-form
+        :timer="timer"
+        @resetTimer="resetTimer()"
+        @startTimer="startTimer($event)"
+      />
     </div>
-    <div id="timer">
-      <h5 id="timer-text">{{ durationMessage }}</h5>
-      <h3>
-        <span id="minutes">{{ minutes }}</span>
-        <span id="separator">:</span>
-        <span id="seconds">{{ seconds }}</span>
+    <div class="timer">
+      <countdown-timer-text :time="totalTime" :duration="duration" />
+      <h3 class="timer-total">
+        <span class="minutes">{{ minutes }}</span>
+        <span class="separator">:</span>
+        <span class="seconds">{{ seconds }}</span>
       </h3>
     </div>
-    <div id="buttons" v-if="timer">
-      <button v-if="timerIsRunning" @click="stopTimer">
-        <i class="glyphicon glyphicon-pause"></i>
-      </button>
-      <button v-else @click="startTimer">
-        <i class="glyphicon glyphicon-play"></i>
-      </button>
-    </div>
+    <countdown-timer-stop-button
+      v-if="timer"
+      :timerIsRunning="timerIsRunning"
+      @stopTimer="stopTimer()"
+      @startTimer="startTimer()"
+    />
     <br />
-    <div id="speed-buttons" v-if="timer">
-      <button @click="changeTimerSpeed(1)">
-        1 X
-      </button>
-      <button @click="changeTimerSpeed(1.5)">
-        1.5 X
-      </button>
-      <button @click="changeTimerSpeed(2)">
-        2 X
-      </button>
-    </div>
+    <countdown-timer-speed-buttons
+      v-if="timer"
+      @changeSpeed="changeTimerSpeed($event)"
+    />
   </div>
 </template>
 
 <script>
+import CountdownTimerForm from "@/components/CountdownTimerForm";
+import CountdownTimerText from "@/components/CountdownTimerText";
+import CountdownTimerStopButton from "@/components/CountdownTimerStopButton";
+import CountdownTimerSpeedButtons from "@/components/CountdownTimerSpeedButtons";
+
 export default {
+  name: "CountDownTimer",
+  components: {
+    CountdownTimerForm,
+    CountdownTimerText,
+    CountdownTimerStopButton,
+    CountdownTimerSpeedButtons
+  },
   data() {
     return {
-      inputNumber: null,
-      errorInputMessage: null,
-      selectedDuration: null,
+      duration: null,
       timer: null,
       totalTime: null,
       timerIsRunning: false,
@@ -58,21 +53,6 @@ export default {
     };
   },
   computed: {
-    durationMessage() {
-      const moreThanHalfway = this.totalTime < this.selectedDuration / 2;
-      if (this.totalTime === null) {
-        return "";
-      } else if (this.totalTime === 0) {
-        return "Time’s up!”";
-      } else if (moreThanHalfway) {
-        if (this.totalTime === 20)
-          document.getElementById("timer-text").classList.add("red");
-        if (this.totalTime === 10)
-          document.getElementById("timer-text").classList.add("blinking");
-        return "More than halfway there";
-      }
-      return "";
-    },
     minutes() {
       if (!this.timer) return "00";
       const minutes = Math.floor(this.totalTime / 60);
@@ -85,23 +65,15 @@ export default {
     }
   },
   methods: {
-    validateInput() {
-      if (this.inputNumber && typeof this.inputNumber == "number") {
-        this.errorInputMessage = null;
-        this.startTimer();
-      } else {
-        this.errorInputMessage = "Please enter a valid number";
-      }
-    },
     countdown() {
       this.totalTime--;
       if (this.totalTime === 0) this.endTimer();
     },
-    startTimer() {
-      if (!this.totalTime) {
+    startTimer(inputNumber) {
+      if (inputNumber && !this.totalTime) {
         this.timerSpeed = 1000;
-        this.selectedDuration = this.inputNumber * 60;
-        this.totalTime = this.selectedDuration;
+        this.duration = inputNumber * 60;
+        this.totalTime = this.duration;
       }
       this.timer = setInterval(() => this.countdown(), this.timerSpeed);
       this.timerIsRunning = true;
@@ -113,24 +85,21 @@ export default {
     endTimer() {
       this.stopTimer();
       this.timer = null;
-      document.getElementById("timer-text").classList.remove("blinking", "red");
     },
     resetTimer() {
       clearInterval(this.timer);
       this.totalTime = null;
-      this.selectedDuration = null;
+      this.duration = null;
       this.timer = null;
       this.timerIsRunning = false;
     },
-    changeTimerSpeed(speed) {
-      const ms = 1000 / speed;
+    changeTimerSpeed(ms) {
       this.timerSpeed = ms;
       if (this.timerIsRunning) {
         clearInterval(this.timer);
         this.timer = setInterval(() => this.countdown(), ms);
       }
     },
-
     formatTime(time) {
       return (time < 10 ? "0" : "") + time;
     }
@@ -138,17 +107,4 @@ export default {
 };
 </script>
 
-<style scoped>
-#timer-text.red {
-  color: red;
-}
-#timer-text.blinking {
-  animation: blinker 1s linear infinite;
-}
-
-@keyframes blinker {
-  50% {
-    opacity: 0;
-  }
-}
-</style>
+<style scoped></style>
