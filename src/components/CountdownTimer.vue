@@ -10,7 +10,7 @@
         />
       </div>
       <div class="timer-body">
-        <timer-text
+        <timer-body
           :timer="timer"
           :totalTime="totalTime"
           :selectedDuration="selectedDuration"
@@ -34,7 +34,7 @@
 
 <script>
 import TimerForm from "@/components/TimerForm";
-import TimerText from "@/components/TimerText";
+import TimerBody from "@/components/TimerBody";
 import TimerStopButton from "@/components/TimerStopButton";
 import TimerSpeedButtons from "@/components/TimerSpeedButtons";
 
@@ -42,7 +42,7 @@ export default {
   name: "CountDownTimer",
   components: {
     TimerForm,
-    TimerText,
+    TimerBody,
     TimerStopButton,
     TimerSpeedButtons
   },

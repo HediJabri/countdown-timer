@@ -1,5 +1,5 @@
 <template>
-  <div class="timer-text">
+  <div class="timer-body">
     <div class="timer-message-container">
       <h6 class="timer-message" :class="classMessage">
         {{ message }}
@@ -66,7 +66,7 @@ export default {
 </script>
 
 <style scoped>
-.timer-text {
+.timer-body {
   position: relative;
 }
 .timer-message-container {
