@@ -1,13 +1,14 @@
 <template>
   <div class="timer-speed-buttons">
-    <button
+    <div
+      class="btn btn-speed"
       :class="{ active: isActiveValue(value) }"
       @click="changeSpeed(value)"
       v-for="value in speedValues"
       :key="value"
     >
-      {{ value }} X
-    </button>
+      {{ value }}x
+    </div>
   </div>
 </template>
 
@@ -33,8 +34,18 @@ export default {
 };
 </script>
 
-<style scoped>
-button.active {
-  color: blue;
+<style scoped lang="scss">
+.btn {
+  font-weight: 700;
+  transition: 0.3s;
+  border: none;
+  margin: 0 4px;
+  border: 1px solid;
+}
+.btn.active {
+  color: white;
+  font-weight: 700;
+  transition: 0.3s;
+  background: linear-gradient(to top right, #0c2b4d, #556a82);
 }
 </style>

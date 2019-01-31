@@ -1,29 +1,33 @@
 <template>
   <div>
-    <div>
-      <timer-form
-        :timer="timer"
-        @resetTimer="resetTimer()"
-        @startTimer="startTimer($event)"
-      />
-    </div>
+    <h3 class="timer-title">Countdown Timer</h3>
     <div class="timer">
-      <timer-text :time="totalTime" :duration="duration" />
-      <h3 class="timer-total">
-        <span class="minutes">{{ minutes }}</span>
-        <span class="separator">:</span>
-        <span class="seconds">{{ seconds }}</span>
-      </h3>
-      <timer-stop-button
-        v-if="timer"
-        :timerIsRunning="timerIsRunning"
-        @stopTimer="stopTimer()"
-        @startTimer="startTimer()"
-      />
-      <timer-speed-buttons
-        v-if="timer"
-        @changeSpeed="changeTimerSpeed($event)"
-      />
+      <div class="timer-header">
+        <timer-form
+          :timer="timer"
+          @resetTimer="resetTimer()"
+          @initTimer="initTimer($event)"
+        />
+      </div>
+      <div class="timer-body">
+        <timer-text
+          :timer="timer"
+          :totalTime="totalTime"
+          :selectedDuration="selectedDuration"
+        />
+        <timer-stop-button
+          v-if="timer"
+          :timerIsRunning="timerIsRunning"
+          @stopTimer="stopTimer()"
+          @startTimer="startTimer()"
+        />
+      </div>
+      <div class="timer-footer">
+        <timer-speed-buttons
+          v-if="timer"
+          @changeSpeed="changeTimerSpeed($event)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -44,36 +48,26 @@ export default {
   },
   data() {
     return {
-      duration: null,
+      selectedDuration: null,
       timer: null,
       totalTime: null,
       timerIsRunning: false,
-      timerSpeed: 1000
+      timerSpeed: null
     };
-  },
-  computed: {
-    minutes() {
-      if (!this.timer) return "00";
-      const minutes = Math.floor(this.totalTime / 60);
-      return this.formatTime(minutes);
-    },
-    seconds() {
-      if (!this.timer) return "00";
-      const seconds = this.totalTime - this.minutes * 60;
-      return this.formatTime(seconds);
-    }
   },
   methods: {
     countdown() {
       this.totalTime--;
       if (this.totalTime === 0) this.endTimer();
     },
-    startTimer(inputNumber) {
-      if (inputNumber && !this.totalTime) {
-        this.timerSpeed = 1000;
-        this.duration = inputNumber * 60;
-        this.totalTime = this.duration;
-      }
+    initTimer(inputNumber) {
+      if (this.totalTime) return;
+      this.timerSpeed = 1000;
+      this.selectedDuration = inputNumber * 60;
+      this.totalTime = this.selectedDuration;
+      this.startTimer();
+    },
+    startTimer() {
       this.timer = setInterval(() => this.countdown(), this.timerSpeed);
       this.timerIsRunning = true;
     },
@@ -88,9 +82,10 @@ export default {
     resetTimer() {
       clearInterval(this.timer);
       this.totalTime = null;
-      this.duration = null;
+      this.selectedDuration = null;
       this.timer = null;
       this.timerIsRunning = false;
+      this.timerSpeed = null;
     },
     changeTimerSpeed(ms) {
       this.timerSpeed = ms;
@@ -98,12 +93,36 @@ export default {
         clearInterval(this.timer);
         this.timer = setInterval(() => this.countdown(), ms);
       }
-    },
-    formatTime(time) {
-      return (time < 10 ? "0" : "") + time;
     }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.timer {
+  width: 400px;
+  min-height: 310px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 3px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+}
+.timer-title {
+  color: white;
+  height: 42px;
+  font-weight: 700;
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: 3.5px;
+}
+.timer-header {
+  margin-top: 25px;
+}
+.timer-body {
+  position: relative;
+}
+.timer-footer {
+  margin-top: 30px;
+}
+</style>
